@@ -63,16 +63,25 @@ with tab_ficha:
 
     with der:
         valores = [float(p[s]) for s in STATS]
+        tipo1 = p["type_1"]
+        tipo2 = p["type_2"] if pd.notna(p["type_2"]) else None
+        color1 = COLOR_TIPO.get(tipo1, "#FF0000")
+        color2 = COLOR_TIPO.get(tipo2, color1)
+
         fig = go.Figure(data=go.Scatterpolar(
-            r=valores + [valores[0]], # Para cerrar el gráfico
-            theta=STATS + [STATS[0]], # Para cerrar el gráfico
+            r=valores + [valores[0]],
+            theta=STATS + [STATS[0]],
             fill='toself',
-            line_color='red'))
+            fillcolor=color1,
+            line=dict(color=color2, width=3)
+        ))
+
         fig.update_layout(
             template="plotly_dark",
             height=430,
             polar=dict(radialaxis=dict(range=[0,255])),
-            title=f"Stats de {p['name']}") 
+            title=f"Stats de {p['name']}"
+        )
         st.plotly_chart(fig, width="stretch")
 
 
